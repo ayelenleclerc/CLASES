@@ -24,8 +24,18 @@ const server = app.listen(PORT, () => {
 });
 
 const io = new Server(server);
+
+const messages = [];
 io.on("connection", (socket) => {
   console.log("Nuevo usuario conectado");
+  socket.on("message", (data) => {
+    messages.push(data);
+    io.emit("messageLogs", messages);
+  });
+  socket.on("Authenticated", (data) => {
+    socket.emit("messageLogs", messages);
+    socket.broadcast.emit("newUserConnected", data);
+  });
 
   socket.on("disconnect", () => {
     console.log("Usuario desconectado");
