@@ -1,0 +1,51 @@
+show dbs (mostrar bases de datos)
+use colegio (crear base de datos use nombredeDB)
+db.estudiantes.insertOne({})(agregar coleccion ({objeto de datos}))
+show collections (muestra colecciones de la db)
+db.etudiantes.find()(mostrar los datos)
+
+db.estudiates.insertMany([   (si no esta cerrado, al dar enter lo toma como salto de linea,)
+{name:"Ayelen", lastname:"Leclerc", email:"correoAye@correo.com", age:27},
+{name:"Mauricio", lastname:"Espinosa", email:"correoMau@correo.com", age:27},
+])
+
+_____________________________________________________________________________________
+db.createCollection("materias") (crea la collection sin necesidad de insertr datos)
+
+db.estudiantes.countDocuments() (conteo de documentos)
+db.estudiantes.estimatedDocumentCount() (da un estimado de la cantidad de documentos que estan disponibles en ese instante, no admite parametros)
+db.estudiantes.countDocument(parametro) (cuenta los documentos con cierto parametro)
+
+
+FILTROS
+
+db.estudiantes.find({key:{$operador : valor}})
+db.estudiantes.find({$and:[{age:{$gte:19}},{gender:"F"}]})
+
+
+db.estudiantes.find({email:{$exists:false}}) (buscar un dato que no exista)
+
+PROYECCIONES
+
+db.estudiantes.find({aca siempre trae el filtro},{proyeccion, trae unicamente los parametros que definimos aca})
+db.estudiantes.find({},{firstName:1, lastName:1}) trae todos los nombres y apellidos (con 1)
+db.estudiantes.find({},{email:0}) no nos trae ese dato (con 0)
+db.estudiantes.find({},{firstName=1,email:0})  el primer numero define la inclusion (1), y luego va la exclusion (0)
+
+sort
+db.estudiantes.find().sort(age:1) muestra los datos de forma ordenada por el dato del parametro 1= ascendente -1= descendente
+db.estudiantes.find().sort(age:1, lastname:-1)
+
+limit
+db.estudiantes.find().limit(3) limita la cantidad de lo que va a devolver (para paginacion)
+db.estudiantes.find().limit(3).skip(3) (skip es para que salte los elementos que le indico y me trae la cantidad de elementos que siguen aplicando el limit)
+
+
+UPDATE
+db.collection.updateOne(query, update, option)
+
+db.estudiantes.updateOne({email:{$exists:false}},{$set:{email:"correoasdad@correo.com"}})
+db.estudiantes.updateMany({},{$set:{active:true}})
+
+
+
