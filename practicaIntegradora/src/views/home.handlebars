@@ -1,0 +1,10 @@
+<h1>Hola</h1>
+
+{{#each videogames}}
+  <p>{{this.title}}</p>
+  <p>{{this.description}}</p>
+  <p>{{this.price}}</p>
+  <p>{{this.categories}}</p>
+  <img src={{this.images}} alt={{this.title}} />
+
+{{/each}}
