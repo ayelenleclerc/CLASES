@@ -1,11 +1,15 @@
 import { Router } from "express";
-import VideogameManager from "../dao/mongo/managers/videogameManager.js";
+import VideoGamesManager from "../dao/mongo/managers/VideogamesManager.js";
 
 const router = Router();
-const videogameService = new VideogameManager();
+const videogamesService = new VideoGamesManager();
+
 router.get("/", async (req, res) => {
-  const videogames = await videogameService.getVideogames();
-  res.render("home", { videogames });
+  const videogames = await videogamesService.getVideogames();
+  console.log(videogames);
+  res.render("Home", {
+    videogames,
+  });
 });
 
 export default router;

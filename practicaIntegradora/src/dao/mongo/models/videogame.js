@@ -1,10 +1,14 @@
 import mongoose from "mongoose";
 
-const collection = "videogames";
+const collection = "Videogames";
 
 const schema = new mongoose.Schema(
   {
     title: {
+      type: String,
+      required: true,
+    },
+    description: {
       type: String,
       required: true,
     },
@@ -15,10 +19,6 @@ const schema = new mongoose.Schema(
     categories: {
       type: Array,
       default: [],
-    },
-    description: {
-      type: String,
-      required: true,
     },
     images: {
       type: Array,

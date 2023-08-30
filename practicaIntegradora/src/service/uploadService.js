@@ -2,14 +2,16 @@ import multer from "multer";
 import __dirname from "../utils.js";
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    return cb(null, `${__dirname}/public/img`);
+  //Aquí va el QUÉ, el CÓMO y el DÓNDE se guarda
+  destination: function (req, file, callback) {
+    return callback(null, `${__dirname}/public/img`);
   },
-
-  filename: function (req, file, cb) {
-    return cb(null, `${Date.now()}-${file.originalname}`);
+  filename: function (req, file, callback) {
+    return callback(null, `${Date.now()}-${file.originalname}`);
   },
 });
+
+//Ya tengo el almacenamiento, ahora sí, el uploader (Cargador)
 
 const uploader = multer({ storage });
 
