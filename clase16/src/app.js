@@ -3,9 +3,11 @@ import Handlebars from "express-handlebars";
 import mongoose from "mongoose";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import passport from "passport";
 
 import viewsRouter from "./routes/views.router.js";
 import sessionsRouter from "./routes/sessions.router.js";
+import initializeStrategies from "./config/passport.config.js";
 import __dirname from "./utils.js";
 
 const app = express();
@@ -22,6 +24,8 @@ app.use(
     secret: "papa",
   })
 );
+initializeStrategies();
+app.use(passport.initialize());
 
 const connection = mongoose.connect(
   "mongodb+srv://Ayelenleclerc:yuskia13@backend.xrrgkdz.mongodb.net/PruebaLogin?retryWrites=true&w=majority"

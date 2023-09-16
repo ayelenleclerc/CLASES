@@ -1,44 +1,37 @@
 import { Router } from "express";
-import UserManager from "../dao/mongo/managers/UserManager.js";
+import passport from "passport";
 
 const router = Router();
 
-const usersService = new UserManager();
+router.post(
+  "/register",
+  passport.authenticate("register", {
+    failureRedirect: "/api/sessions/authFail",
+    failureMessage: true,
+  }),
+  async (req, res) => {
+    //Al final el usuarios siempre te va a llegar en req.user
+    res.send({ status: "success", payload: req.user._id });
+  }
+);
 
-router.post("/register", async (req, res) => {
-  const { firstName, lastName, email, age, password } = req.body;
-  if (!firstName || !email || !password)
-    return res
-      .status(400)
-      .send({ status: "error", error: "Incomplete values" });
-  //Si ya pasó la validación, lo creo
-  const newUser = {
-    firstName,
-    lastName,
-    email,
-    age,
-    password: createHash(password),
-  };
-  const result = await usersService.create(newUser);
+router.post(
+  "/login",
+  passport.authenticate("login", {
+    failureRedirect: "/api/sessions/authFail",
+    failureMessage: true,
+  }),
+  async (req, res) => {
+    //Al final el usuarios siempre te va a llegar en req.user
+    req.session.user = req.user;
+    res.send({ status: "success", message: "Logged in" });
+  }
+);
 
-  res.send({ status: "success", payload: result._id });
-});
-
-router.post("/login", async (req, res) => {
-  //Oye, se supone que debe estar registrado ¿no?, entonces hay que buscarlo en la base de datos
-  const { email, password } = req.body;
-  if (!email || !password)
-    return res
-      .status(400)
-      .send({ status: "error", error: "Incomplete values" });
-  const user = await usersService.getBy({ email, password });
-  if (!user)
-    return res
-      .status(400)
-      .send({ status: "error", error: "Incorrect Credentials" });
-  //Sólo si ambos se cumplen, le creo una sesión
-  req.session.user = user;
-  res.send({ status: "success", message: "Logueado" });
+router.get("/authFail", (req, res) => {
+  //Si cayó a este endpoint, significa que falló.
+  console.log(req.session.messages);
+  res.status(401).send({ status: "error", error: "Error de autenticación" });
 });
 
 router.get("/logout", async (req, res) => {
@@ -50,6 +43,28 @@ router.get("/logout", async (req, res) => {
       res.redirect("/");
     }
   });
+});
+
+// router.get("/eliminarProductos", (req, res) => {
+//   //Número uno, ¿Ya tiene credenciales (ya puedo identificarlo)?
+//   if (!req.session.user)
+//     return res.status(401).send({ status: "error", error: "Not logged in" });
+//   //Si llega a esta línea, entonces ya sé quién es
+//   //Ahora necesito corroborar si tiene el permiso suficiente
+//   if (req.session.user.role !== "admin")
+//     return res.status(403).send({ status: "error", error: "No permitido" });
+//   //Si llegué hasta acá, sí te conozco, y SÍ tienes permisos
+//   res.send({ status: "success", message: "Productos eliminados" });
+// });
+
+//PAra autenticaciones de terceros siempre ocuparemos 2 endpoint
+
+router.get("/github", passport.authenticate("github"), (req, res) => {}); //Trigger de mi estrategia de passport
+
+router.get("/githubcallback", passport.authenticate("github"), (req, res) => {
+  //aqui es donde cae toda la info
+  req.session.user = req.user;
+  res.redirect("/");
 });
 
 export default router;
