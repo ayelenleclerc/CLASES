@@ -1,8 +1,7 @@
 const form = document.getElementById("registerForm");
 
-form.addEventListener("submit", async (e) => {
-  console.log(e);
-  e.preventDefault();
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
   const data = new FormData(form);
   const obj = {};
   data.forEach((value, key) => (obj[key] = value));
@@ -15,4 +14,7 @@ form.addEventListener("submit", async (e) => {
   });
   const result = await response.json();
   console.log(result);
+  if (response.status === 200) {
+    window.location.replace("login");
+  }
 });

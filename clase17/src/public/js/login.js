@@ -1,12 +1,11 @@
 const form = document.getElementById("loginForm");
 
-form.addEventListener("submit", async (e) => {
-  console.log(e);
-  e.preventDefault();
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
   const data = new FormData(form);
   const obj = {};
   data.forEach((value, key) => (obj[key] = value));
-  const response = await fetch("/api/sessions/loginJWT", {
+  const response = await fetch("/api/sessions/login", {
     method: "POST",
     body: JSON.stringify(obj),
     headers: {
@@ -14,11 +13,8 @@ form.addEventListener("submit", async (e) => {
     },
   });
   const result = await response.json();
+  console.log(result);
   if (response.status === 200) {
-    //DESCOMENTAR SI USAS EXPRESS SESSIONS
-    // window.location.replace('/');
-
-    //JWT
-    localStorage.setItem("accessToken", result.token);
+    window.location.replace("home");
   }
 });

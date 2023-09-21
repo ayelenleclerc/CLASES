@@ -1,8 +1,9 @@
 import passport from "passport";
 import local from "passport-local";
+import GithubStrategy from "passport-github2";
+
 import UserManager from "../dao/Mongo/managers/UserManager.js";
 import auth from "../services/auth.js";
-import GithubStrategy from "passport-github2";
 
 //Estrategia local = Registro y Login
 const LocalStrategy = local.Strategy; // Local = username/email + password
@@ -67,23 +68,22 @@ const initializeStrategies = () => {
     )
   );
 
-  //FUTURAS ESTRATEGIAS (FACEBOOK, APPLE, TIKTOK, GITHUB)
-
   passport.use(
     "github",
     new GithubStrategy(
       {
         clientID: "Iv1.4137e4f2dd3e6616",
-        clientServer: "7a4926b5a7ac5efb23ac7b8a5d2b555a77c64096",
+        clientSecret: "353ae059b1ff420033c685f1ab84e3c1a90ff3cc",
         callbackURL: "http://localhost:8080/api/sessions/githubcallback",
       },
       async (accessToken, refreshToken, profile, done) => {
         console.log(profile);
         const { email, name } = profile._json;
-        //Ahora si, comenzamos a tabajar con NUEsTRA base de datos
-        //el usuario existe?
+        //Ahora sí, comenzamos a trabajar con NUESTRA base de datos
+        // ¿El usuario ya existía?
         const user = await usersService.getBy({ email });
         if (!user) {
+          //No existe? LO CREO
           const newUser = {
             firstName: name,
             email,
@@ -92,11 +92,14 @@ const initializeStrategies = () => {
           const result = await usersService.create(newUser);
           done(null, result);
         } else {
+          //Sí existe? entonces sólo devuélvelo.
           done(null, user);
         }
       }
     )
   );
+
+  //FUTURAS ESTRATEGIAS (FACEBOOK, APPLE, TIKTOK, GITHUB)
 
   passport.serializeUser((user, done) => {
     return done(null, user._id);
