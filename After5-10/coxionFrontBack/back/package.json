@@ -1,0 +1,16 @@
+{
+  "author": "",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "back",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "version": "1.0.0"
+}
